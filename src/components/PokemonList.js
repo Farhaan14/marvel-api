@@ -2,13 +2,20 @@ import React from 'react'
 import axios from 'axios'
 
 export default function PokemonList({pokemonURL}) {
+  let pokemon = []
+
   return (
-    <div>
-        {
-          pokemonURL.map(p => (
-              <div key={p}>{p}</div>
-          ))
-        }        
-    </div>
+    <>
+      {
+        pokemonURL.forEach(url => {
+          axios.get(url).then(res => {
+            pokemon.push(res.data)
+          })
+        })
+      }
+
+      {console.log(pokemon)}
+
+    </>
   )
 }

@@ -17,23 +17,17 @@ function App() {
   useEffect(() => {
     setLoading(true);
     let cancel;
-    axios.get(currentPageURL, {
-      cancelToken: new axios.CancelToken(c => cancel = c)
-    }).then(res => {
-      setLoading(false);
-      setNextPageURL(res.data.next);
-      setPrevPageURL(res.data.previous);
-      setPokemonURL(res.data.results.map(p => p.url))
-      // res.data.results.forEach(p => {
-      //   console.log(p)
-      //   setPokemon(p.name);
-      //   axios.get(`https://pokeapi.co/api/v2/pokemon/${p.name}`).then(res => {
-      //     setPokemonImage(prevState => [...prevState, res.data.sprites.front_default])
-      //   })
-      // })
-    })
-
-
+    try {
+      axios.get(currentPageURL, {
+        cancelToken: new axios.CancelToken(c => cancel = c)
+      }).then(res => {
+        setLoading(false);
+        setNextPageURL(res.data.next);
+        setPrevPageURL(res.data.previous);
+        setPokemonURL(res.data.results.map(p => p.url))})
+    } catch (error) {
+      console.log(error);
+    }
 
     return () => cancel()
 
