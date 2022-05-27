@@ -1,56 +1,78 @@
-import React, {useState, useEffect} from 'react';
-import axios from 'axios';
-
-import PokemonList from './components/PokemonList';
-
+import React, { useState, useEffect } from 'react';
+import Navbar from './components/Navbar';
+import Card from './components/Card';
+import { getAllPokemon, getPokemon } from './helper';
 import './App.css';
-import Pagination from './components/Pagination';
+
 
 
 function App() {
-  const [pokemonURL, setPokemonURL] = useState([]);
-  const [currentPageURL, setCurrentPageURL] = useState("https://pokeapi.co/api/v2/pokemon");
-  const [nextPageURL, setNextPageURL] = useState();
-  const [prevPageURL, setPrevPageURL] = useState();
+  const [pokemonData, setPokemonData] = useState([])
+  const [nextUrl, setNextUrl] = useState('');
+  const [prevUrl, setPrevUrl] = useState('');
   const [loading, setLoading] = useState(true);
+  const initialURL = 'https://pokeapi.co/api/v2/pokemon'
 
   useEffect(() => {
-    setLoading(true);
-    let cancel;
-    try {
-      axios.get(currentPageURL, {
-        cancelToken: new axios.CancelToken(c => cancel = c)
-      }).then(res => {
-        setLoading(false);
-        setNextPageURL(res.data.next);
-        setPrevPageURL(res.data.previous);
-        setPokemonURL(res.data.results.map(p => p.url))})
-    } catch (error) {
-      console.log(error);
+    async function fetchData() {
+      let response = await getAllPokemon(initialURL)
+      setNextUrl(response.next);
+      setPrevUrl(response.previous);
+      await loadPokemon(response.results);
+      setLoading(false);
     }
+    fetchData();
+  }, [])
 
-    return () => cancel()
-
-  }, [currentPageURL])
-
-
-  function handleNextPage() {
-    setCurrentPageURL(nextPageURL);
+  const next = async () => {
+    setLoading(true);
+    let data = await getAllPokemon(nextUrl);
+    await loadPokemon(data.results);
+    setNextUrl(data.next);
+    setPrevUrl(data.previous);
+    setLoading(false);
   }
 
-  function handlePrevPage() {
-    setCurrentPageURL(prevPageURL);
+  const prev = async () => {
+    if (!prevUrl) return;
+    setLoading(true);
+    let data = await getAllPokemon(prevUrl);
+    await loadPokemon(data.results);
+    setNextUrl(data.next);
+    setPrevUrl(data.previous);
+    setLoading(false);
   }
 
-
-  if (loading) {
-    return <div>Loading...</div>
+  const loadPokemon = async (data) => {
+    let _pokemonData = await Promise.all(data.map(async pokemon => {
+      let pokemonRecord = await getPokemon(pokemon)
+      return pokemonRecord
+    }))
+    setPokemonData(_pokemonData);
   }
 
   return (
     <>
-      <PokemonList pokemonURL={pokemonURL} />
-      <Pagination handleNextPage={nextPageURL ? handleNextPage : null} handlePrevPage={prevPageURL ? handlePrevPage : null} />
+      <Navbar />
+      <div>
+        {loading ? <h1 style={{ textAlign: 'center' }}>Loading...</h1> : (
+          <>
+            <div className="btn">
+              <button onClick={prev}>Prev</button>
+              <button onClick={next}>Next</button>
+            </div>
+            <div className="grid-container">
+              {pokemonData.map((pokemon, i) => {
+                return <Card key={i} pokemon={pokemon} />
+              })}
+            </div>
+            <div className="btn">
+              <button onClick={prev}>Prev</button>
+              <button onClick={next}>Next</button>
+            </div>
+          </>
+        )}
+      </div>
     </>
   );
 }
