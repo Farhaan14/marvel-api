@@ -3,8 +3,7 @@ import Navbar from './components/Navbar';
 import Card from './components/Card';
 import { getAllPokemon, getPokemon } from './helper';
 import './App.css';
-
-
+import {Link} from 'react-router-dom'
 
 function App() {
   const [pokemonData, setPokemonData] = useState([])
@@ -63,7 +62,11 @@ function App() {
             </div>
             <div className="grid-container">
               {pokemonData.map((pokemon, i) => {
-                return <Card key={i} pokemon={pokemon} />
+                return <React.Fragment key={i}>
+                          <Link to={`/details`} key={i} state={{ pokemon: pokemon }}>
+                            <Card key={pokemon.name} pokemon={pokemon}/>
+                          </Link>
+                      </React.Fragment>
               })}
             </div>
             <div className="btn">
@@ -73,6 +76,8 @@ function App() {
           </>
         )}
       </div>
+
+      
     </>
   );
 }

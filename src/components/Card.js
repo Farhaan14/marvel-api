@@ -1,6 +1,8 @@
 import React from 'react';
 
+
 function Card({ pokemon }) {
+
     return (
         <div className="Card">
             <div className="Card__img">
@@ -13,7 +15,7 @@ function Card({ pokemon }) {
                 {
                     pokemon.types.map(type => {
                         return (
-                            <div className="Card__type">
+                            <div className="Card__type" key={type.type.name}>
                                 {type.type.name}
                             </div>
                         )
