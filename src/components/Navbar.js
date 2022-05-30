@@ -2,7 +2,7 @@ import React from 'react';
 
 function Navbar() {
     return (
-        <div className="Navbar">
+        <div className="navbar-cont">
             Pokemon API
         </div>
     );

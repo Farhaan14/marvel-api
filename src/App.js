@@ -56,11 +56,7 @@ function App() {
       <div>
         {loading ? <h1 style={{ textAlign: 'center' }}>Loading...</h1> : (
           <>
-            <div className="btn">
-              <button onClick={prev}>Prev</button>
-              <button onClick={next}>Next</button>
-            </div>
-            <div className="grid-container">
+            <div className="card-container">
               {pokemonData.map((pokemon, i) => {
                 return <React.Fragment key={i}>
                           <Link to={`/details`} key={i} state={{ pokemon: pokemon }}>
