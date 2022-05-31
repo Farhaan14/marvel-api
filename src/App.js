@@ -53,7 +53,7 @@ function App() {
   return (
     <>
       <Navbar />
-      <div>
+      <>
         {loading ? <h1 style={{ textAlign: 'center' }}>Loading...</h1> : (
           <>
             <div className="card-container">
@@ -65,13 +65,13 @@ function App() {
                       </React.Fragment>
               })}
             </div>
-            <div className="btn">
-              <button onClick={prev}>Prev</button>
-              <button onClick={next}>Next</button>
+            <div className="btn-cont">
+              <button onClick={prev} className="btn">Prev</button>
+              <button onClick={next} className="btn">Next</button>
             </div>
           </>
         )}
-      </div>
+      </>
 
       
     </>
